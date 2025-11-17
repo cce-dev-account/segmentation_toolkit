@@ -1,0 +1,51 @@
+# Lending Club Dataset Configuration
+# Large dataset (2M+ rows) - production simulation with business constraints
+
+name: "Lending Club Segmentation"
+description: "Production-scale analysis with Lending Club loan data"
+
+data:
+  source: "data/lending_club_test.csv"
+  data_type: "csv"
+  sample_size: null  # Use full dataset (2.26M rows)
+  use_oot: false
+  random_state: 42
+
+irb_params:
+  # Parameters for large dataset
+  max_depth: 5
+  min_samples_split: 20000
+  min_samples_leaf: 10000
+  criterion: "gini"
+  random_state: 42
+
+  # Standard IRB requirements
+  min_defaults_per_leaf: 500
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.05  # 5% for large dataset
+  max_segment_density: 0.40
+
+  # Business constraints (examples - adjust based on your requirements)
+  monotone_constraints: {}  # e.g., {"fico_range_high": 1, "int_rate": -1}
+  forced_splits: {}  # e.g., {"fico_range_high": 680, "int_rate": 15.0, "dti": 35.0}
+
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+output:
+  output_dir: "./output/lending_club"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

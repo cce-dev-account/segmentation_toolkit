@@ -1,0 +1,75 @@
+# Categorical Features Example Configuration
+# Demonstrates how to use categorical variables in segmentation
+
+name: "Segmentation with Categorical Features"
+description: "Example showing categorical feature support for loan purpose, grade, etc."
+
+# Data Configuration
+data:
+  source: "data/loans_with_categoricals.csv"
+  data_type: "csv"
+  sample_size: 50000
+  use_oot: false
+  random_state: 42
+
+  # CATEGORICAL COLUMNS
+  # Specify columns to preserve as categorical (not one-hot encoded)
+  # These can be used in forced splits as membership conditions
+  categorical_columns:
+    - loan_purpose
+    - grade
+    - home_ownership
+
+# IRB Segmentation Parameters
+irb_params:
+  # Tree structure
+  max_depth: 4
+  min_samples_split: 2000
+  min_samples_leaf: 1000
+  criterion: "gini"
+  random_state: 42
+
+  # IRB requirements
+  min_defaults_per_leaf: 100
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.05
+  max_segment_density: 0.40
+
+  # Business constraints
+  monotone_constraints:
+    credit_score: 1  # Higher score = lower risk
+    interest_rate: -1  # Higher rate = higher risk
+
+  # CATEGORICAL FORCED SPLITS
+  # Use list syntax for categorical membership splits
+  forced_splits:
+    int_rate: 15.0  # Numeric threshold
+    loan_purpose:  # Categorical membership (IN condition)
+      - education
+      - medical
+      - small_business
+    # This creates: "loan_purpose IN ['education', 'medical', 'small_business']"
+
+  # Validation tests
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+# Output Configuration
+output:
+  output_dir: "./output/categorical_example"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+# Workflow Settings
+run_validation: true
+verbose: true

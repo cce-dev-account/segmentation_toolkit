@@ -1,0 +1,14 @@
+SEGMENT MODIFICATION WORKSHEET,,,,,,Generated from: lending_club_full_report.json
+
+Instructions:,"1. In 'Action' column, enter KEEP or MERGE","2. If MERGE, specify target segment ID in 'Merge_Into' column",3. Add notes explaining your decision,4. Save this file and run: python interfaces/excel_to_json.py
+
+Segment_ID,Observations,Defaults,PD_Rate_%,Density_%,Risk_Level,Action,Merge_Into,Notes
+0,"183,082","3,946",2.16,11.57,Very Low,KEEP,,
+1,"111,761","8,917",7.98,7.06,Low,MERGE,4,Similar to Segment 4 (7.98% vs 8.35% PD)
+2,"254,388","12,961",5.09,16.08,Low,KEEP,,
+3,"272,580","30,192",11.08,17.22,Medium,KEEP,,
+4,"126,561","10,573",8.35,8.00,Low,KEEP,,Accept merge from Segment 1
+5,"415,442","67,295",16.20,26.25,High,KEEP,,
+6,"218,676","54,668",25.00,13.82,Very High,KEEP,,
+
+Valid Actions:,KEEP = Keep segment as-is,MERGE = Merge this segment into another

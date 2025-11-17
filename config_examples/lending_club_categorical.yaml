@@ -1,0 +1,78 @@
+# Lending Club Dataset with Categorical Features
+# Full dataset analysis (2.26M+ rows) with categorical variable support
+# Demonstrates mixed numeric/categorical segmentation for production-scale data
+
+name: "Lending Club Categorical Segmentation"
+description: "Production-scale IRB analysis with categorical features (grade, home_ownership, purpose)"
+
+# Data Configuration
+data:
+  source: "lending_club"     # Use built-in Lending Club loader
+  data_type: "lending_club"  # Built-in loader handles schema properly
+  sample_size: null          # Use ALL observations (full dataset)
+  use_oot: true              # Use temporal split (if available)
+  random_state: 42
+
+  # CATEGORICAL COLUMNS
+  # Preserve these columns as categorical for membership-based forced splits
+  # Note: Built-in loader already handles encoding, but we can still reference
+  # categorical features for forced splits using the original column names
+  categorical_columns:
+    - grade              # Lending Club grade (A-G)
+    - home_ownership     # RENT, OWN, MORTGAGE, OTHER
+    - purpose            # Loan purpose (debt_consolidation, credit_card, etc.)
+    - term               # Loan term (36 months, 60 months)
+
+# IRB Segmentation Parameters
+irb_params:
+  # Tree structure - sized for large dataset
+  max_depth: 5
+  min_samples_split: 20000
+  min_samples_leaf: 10000
+  criterion: "gini"
+  random_state: 42
+
+  # IRB requirements - production scale (tuned for better validation)
+  min_defaults_per_leaf: 500
+  min_default_rate_diff: 0.01      # Require 1% PD difference between segments
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.05
+  max_segment_density: 0.40
+
+  # FORCED SPLITS
+  # Use correct feature names from Lending Club loader
+  forced_splits:
+    interest_rate: 15.0         # Interest rate threshold (%)
+    credit_score: 680           # FICO credit score threshold
+    dti: 25.0                   # Debt-to-income ratio threshold
+    grade_numeric: 5            # Grade threshold (7=A, 6=B, 5=C, 4=D, 3=E, 2=F, 1=G)
+    # Above splits create segments based on credit quality and risk metrics
+
+  # Monotone constraints (numeric features only)
+  monotone_constraints:
+    credit_score: 1             # Higher FICO = lower risk
+    interest_rate: -1           # Higher rate = higher risk
+    annual_income: 1            # Higher income = lower risk
+
+  # Validation tests
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+# Output Configuration
+output:
+  output_dir: "./output/lending_club_categorical"
+  output_formats:
+    - json
+    - excel      # Excel output for business users
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+# Workflow Settings
+run_validation: true
+verbose: true

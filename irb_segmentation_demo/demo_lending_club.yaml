@@ -1,0 +1,62 @@
+# DEMO: Production Scale with Lending Club Dataset
+# Requires manual download - see DATASET_DOWNLOAD.md
+# Runtime: ~2-3 minutes | Dataset: 1.3M rows (95K training with temporal split)
+
+name: "Demo - Lending Club (Production Scale)"
+description: "Production-scale demonstration with temporal validation (2007-2012 train, 2013-2014 val, 2015+ OOT)"
+
+data:
+  source: "lending_club"
+  data_type: "lending_club"
+  sample_size: null
+  use_oot: true              # Temporal split for realistic validation
+  random_state: 42
+  # Note: Categorical features are encoded numerically by the loader
+
+irb_params:
+  # Production-scale parameters
+  max_depth: 5
+  min_samples_split: 20000
+  min_samples_leaf: 10000
+  criterion: "gini"
+  random_state: 42
+
+  # Production IRB requirements
+  min_defaults_per_leaf: 500
+  min_default_rate_diff: 0.01      # Require 1% PD difference
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.05
+  max_segment_density: 0.40
+
+  # Business constraints (realistic credit risk rules)
+  forced_splits:
+    interest_rate: 15.0         # Split at 15% interest rate
+    credit_score: 680           # FICO threshold
+    dti: 25.0                   # Debt-to-income ratio
+    grade_numeric: 5            # Grade threshold
+
+  monotone_constraints:
+    credit_score: 1             # Higher FICO = lower risk
+    interest_rate: -1           # Higher rate = higher risk
+    annual_income: 1            # Higher income = lower risk
+
+  # Full validation suite
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+output:
+  output_dir: "./output/demo_lending_club"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

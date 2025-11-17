@@ -1,0 +1,51 @@
+# DEMO: Quick Start with German Credit Dataset
+# Auto-downloads from UCI - no manual setup needed!
+# Runtime: ~5 seconds | Dataset: 1K rows
+
+name: "Demo - German Credit (Quick Start)"
+description: "Quick demonstration with auto-downloading German Credit dataset"
+
+data:
+  source: "german_credit"
+  data_type: "german_credit"
+  sample_size: null
+  use_oot: false
+  random_state: 42
+
+irb_params:
+  # Relaxed parameters for small dataset
+  max_depth: 3
+  min_samples_split: 100
+  min_samples_leaf: 50
+  criterion: "gini"
+  random_state: 42
+
+  # Relaxed IRB requirements for demo (small dataset)
+  min_defaults_per_leaf: 5
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.10
+  max_segment_density: 0.50
+
+  # No business constraints for demo
+  monotone_constraints: {}
+  forced_splits: {}
+
+  validation_tests:
+    - chi_squared
+    - binomial
+
+output:
+  output_dir: "./output/demo_german"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

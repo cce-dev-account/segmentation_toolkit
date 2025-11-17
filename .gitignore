@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# Output
+output/
+*.log
+
+# Data files (large CSVs)
+data/*.csv
+!data/README.md
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test configs
+test_config.xlsx
+test_config.csv
+
+# Temporary and working files
+*.mp3
+*.zip
+modification_template*.xlsx
+my_config.xlsx
+segmentation_dashboard*.html
+nul
+
+# Demo directories (keep source, ignore packaged versions)
+irb_segmentation_demo*.zip
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+*.cover
+
+# Generated outputs
+notebooks/output/
+*.png
+*.pdf

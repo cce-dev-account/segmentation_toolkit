@@ -1,0 +1,51 @@
+# Taiwan Credit Card Dataset Configuration
+# Medium dataset (30K rows) - good balance for IRB validation
+
+name: "Taiwan Credit Card Analysis"
+description: "Credit card default analysis with Taiwan dataset"
+
+data:
+  source: "data/UCI_Credit_Card.csv"
+  data_type: "csv"
+  sample_size: null
+  use_oot: false
+  random_state: 42
+
+irb_params:
+  # Moderate parameters for medium dataset
+  max_depth: 4
+  min_samples_split: 2000
+  min_samples_leaf: 1000
+  criterion: "gini"
+  random_state: 42
+
+  # Standard IRB requirements
+  min_defaults_per_leaf: 30
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.10
+  max_segment_density: 0.50
+
+  # Business constraints
+  monotone_constraints: {}
+  forced_splits: {}
+
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+output:
+  output_dir: "./output/taiwan_credit"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

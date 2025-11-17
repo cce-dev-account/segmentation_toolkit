@@ -1,0 +1,18 @@
+MODEL PARAMETER ADJUSTMENTS,,,,Generated from: lending_club_full_report.json
+
+Instructions:,1. Modify 'New_Value' column with desired changes,2. Leave 'New_Value' blank to keep current value,3. Add reason for any changes
+
+Parameter,Current_Value,New_Value,Valid_Range,Description,Change_Reason
+max_depth,5,,3-7,Maximum tree depth,
+min_samples_leaf,10000,,1000-50000,Minimum observations per segment,
+min_defaults_per_leaf,500,,50-2000,Minimum defaults per segment,
+min_segment_density,0.05,,0.01-0.20,Minimum segment size (% of population),
+max_segment_density,0.4,,0.30-0.60,Maximum segment size (% of population),
+
+PARAMETER GUIDANCE:
+Change,Effect
+Increase max_depth,"More segments, more granular"
+Decrease min_samples_leaf,"More segments, smaller sizes"
+Increase min_defaults_per_leaf,"Fewer segments, higher statistical power"
+Decrease min_segment_density,Allow smaller segments
+Decrease max_segment_density,Force more balanced segments

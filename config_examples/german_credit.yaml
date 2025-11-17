@@ -1,0 +1,49 @@
+# German Credit Dataset Configuration
+# Small dataset (1K rows) - ideal for quick testing and development
+
+name: "German Credit Analysis"
+description: "Quick test with German Credit dataset (auto-downloads from UCI)"
+
+data:
+  source: "german_credit"
+  data_type: "german_credit"
+  sample_size: null
+  use_oot: false
+  random_state: 42
+
+irb_params:
+  # Relaxed parameters for small dataset
+  max_depth: 3
+  min_samples_split: 100
+  min_samples_leaf: 50
+  criterion: "gini"
+  random_state: 42
+
+  # Relaxed IRB requirements (small dataset)
+  min_defaults_per_leaf: 5  # Reduced from standard 20
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.10
+  max_segment_density: 0.50
+
+  # No business constraints for test dataset
+  monotone_constraints: {}
+  forced_splits: {}
+
+  validation_tests:
+    - chi_squared
+    - binomial
+
+output:
+  output_dir: "./output/german_credit"
+  output_formats:
+    - json
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

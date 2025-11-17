@@ -1,0 +1,69 @@
+"""
+Input Validation Module for IRB Segmentation
+
+This module provides comprehensive validation for:
+- NumPy arrays (shape, dtype, NaN/inf handling)
+- pandas DataFrames (schema, data quality)
+- IRB parameters and constraints
+- Data preprocessing and transformation
+
+All validators provide actionable error messages with specific guidance
+on how to fix validation issues.
+"""
+
+from .input_validator import (
+    validate_array,
+    validate_binary_target,
+    validate_feature_names,
+    validate_train_val_compatibility,
+    ValidationError
+)
+
+from .data_validator import (
+    validate_dataframe,
+    validate_target_column,
+    validate_feature_types,
+    check_data_quality,
+    DataQualityReport
+)
+
+# Import SegmentValidator from parent validators.py module
+import sys
+from pathlib import Path
+parent_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(parent_dir))
+
+try:
+    from validators import SegmentValidator
+except ImportError:
+    # If running from a different context, try direct import
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "validators_legacy",
+        Path(__file__).parent.parent / "validators.py"
+    )
+    if spec and spec.loader:
+        validators_legacy = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validators_legacy)
+        SegmentValidator = validators_legacy.SegmentValidator
+
+__all__ = [
+    # Input validation
+    'validate_array',
+    'validate_binary_target',
+    'validate_feature_names',
+    'validate_train_val_compatibility',
+    'ValidationError',
+
+    # Data validation
+    'validate_dataframe',
+    'validate_target_column',
+    'validate_feature_types',
+    'check_data_quality',
+    'DataQualityReport',
+
+    # Segment validation (from parent validators.py)
+    'SegmentValidator',
+]
+
+__version__ = '1.0.0'

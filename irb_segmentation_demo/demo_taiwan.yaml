@@ -1,0 +1,52 @@
+# DEMO: Medium Scale with Taiwan Credit Dataset
+# Requires manual download - see DATASET_DOWNLOAD.md
+# Runtime: ~30 seconds | Dataset: 30K rows
+
+name: "Demo - Taiwan Credit (Medium Scale)"
+description: "Medium-scale demonstration with Taiwan Credit Card dataset"
+
+data:
+  source: "taiwan_credit"
+  data_type: "taiwan_credit"
+  sample_size: null
+  use_oot: false
+  random_state: 42
+
+irb_params:
+  # Moderate parameters for medium dataset
+  max_depth: 4
+  min_samples_split: 500
+  min_samples_leaf: 250
+  criterion: "gini"
+  random_state: 42
+
+  # Standard IRB requirements
+  min_defaults_per_leaf: 20
+  min_default_rate_diff: 0.01
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.10
+  max_segment_density: 0.40
+
+  # Business constraints
+  monotone_constraints: {}
+  forced_splits: {}
+
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+output:
+  output_dir: "./output/demo_taiwan"
+  output_formats:
+    - json
+    - excel
+    - html
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+run_validation: true
+verbose: true

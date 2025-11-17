@@ -1,0 +1,59 @@
+# Template Configuration for Segmentation Analysis
+# Copy this file and customize for your dataset
+
+name: "My Segmentation Analysis"
+description: "Description of this analysis"
+
+# Data Configuration
+data:
+  source: "path/to/your/data.csv"  # Path to data file
+  data_type: "csv"  # csv, german_credit, lending_club, taiwan_credit, home_credit
+  sample_size: null  # null for full dataset, or integer for sampling
+  use_oot: false  # Use out-of-time validation split
+  random_state: 42
+
+# IRB Segmentation Parameters
+irb_params:
+  # Tree structure
+  max_depth: 3
+  min_samples_split: 1000
+  min_samples_leaf: 500
+  criterion: "gini"
+  random_state: 42
+
+  # IRB requirements
+  min_defaults_per_leaf: 20  # Basel II/III minimum
+  min_default_rate_diff: 0.001
+  significance_level: 0.01
+
+  # Segment density
+  min_segment_density: 0.10  # 10% minimum
+  max_segment_density: 0.50  # 50% maximum
+
+  # Business constraints
+  monotone_constraints: {}  # e.g., {"credit_score": 1, "ltv": -1}
+  forced_splits: {}  # e.g., {"fico": 650, "dti": 35.0}
+
+  # Validation tests
+  validation_tests:
+    - chi_squared
+    - psi
+    - binomial
+
+# Output Configuration
+output:
+  output_dir: "./output"
+  output_formats:
+    - json
+    - excel
+    - html
+  report_name: null  # Auto-generated if null
+  template_name: null  # Auto-generated if null
+  dashboard_name: null  # Auto-generated if null
+  create_dashboard: true
+  create_excel_template: true
+  extract_rules: true
+
+# Workflow Settings
+run_validation: true
+verbose: true
