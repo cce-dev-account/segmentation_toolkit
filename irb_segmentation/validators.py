@@ -362,7 +362,8 @@ class SegmentValidator:
         segments: np.ndarray,
         y: np.ndarray,
         params: 'IRBSegmentationParams',
-        reference_segments: Optional[np.ndarray] = None
+        reference_segments: Optional[np.ndarray] = None,
+        y_pred_proba: Optional[np.ndarray] = None
     ) -> Dict[str, any]:
         """
         Run all configured validation tests.
@@ -372,6 +373,7 @@ class SegmentValidator:
             y: Array of binary outcomes
             params: IRBSegmentationParams object with validation configuration
             reference_segments: Optional reference segments for PSI calculation
+            y_pred_proba: Optional predicted probabilities for performance metrics
 
         Returns:
             Dictionary with all validation results
@@ -400,6 +402,24 @@ class SegmentValidator:
                     segments, y, confidence_level=1 - params.significance_level
                 )
                 results['validations']['binomial'] = result
+
+            elif test in ('gini', 'ks') and y_pred_proba is not None:
+                # Import performance metrics module (lazy import to avoid circular dependency)
+                try:
+                    from irb_segmentation.validators import performance_metrics
+                except ImportError:
+                    # Fallback for relative import
+                    from . import performance_metrics
+
+                # Calculate all performance metrics
+                perf_metrics = performance_metrics.calculate_all_metrics(
+                    y, y_pred_proba,
+                    gini_threshold=0.30,  # Basel II/III threshold
+                    ks_threshold=0.20     # Basel II/III threshold
+                )
+
+                results['validations']['performance_metrics'] = perf_metrics.to_dict()
+                results['all_passed'] &= perf_metrics.passed_thresholds
 
         # Always run core validations
         min_defaults = cls.validate_minimum_defaults(

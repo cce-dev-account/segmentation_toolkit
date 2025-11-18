@@ -27,6 +27,15 @@ from .data_validator import (
     DataQualityReport
 )
 
+from .performance_metrics import (
+    gini_coefficient,
+    ks_statistic,
+    brier_score,
+    accuracy_ratio,
+    calculate_all_metrics,
+    PerformanceMetrics
+)
+
 # Import SegmentValidator from parent validators.py module
 import sys
 from pathlib import Path
@@ -61,6 +70,14 @@ __all__ = [
     'validate_feature_types',
     'check_data_quality',
     'DataQualityReport',
+
+    # Performance metrics
+    'gini_coefficient',
+    'ks_statistic',
+    'brier_score',
+    'accuracy_ratio',
+    'calculate_all_metrics',
+    'PerformanceMetrics',
 
     # Segment validation (from parent validators.py)
     'SegmentValidator',
