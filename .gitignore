@@ -24,8 +24,10 @@ ENV/
 output/
 *.log
 
-# Data files (large CSVs)
+# Data files (large CSVs and compressed files)
 data/*.csv
+data/*.csv.gz
+!data/german_credit.data
 !data/README.md
 
 # Jupyter
