@@ -36,6 +36,14 @@ from .performance_metrics import (
     PerformanceMetrics
 )
 
+from .calibration import (
+    hosmer_lemeshow_test,
+    traffic_light_test,
+    central_tendency_test,
+    run_all_calibration_tests,
+    CalibrationResults
+)
+
 # Import SegmentValidator from parent validators.py module
 import sys
 from pathlib import Path
@@ -78,6 +86,13 @@ __all__ = [
     'accuracy_ratio',
     'calculate_all_metrics',
     'PerformanceMetrics',
+
+    # Calibration testing
+    'hosmer_lemeshow_test',
+    'traffic_light_test',
+    'central_tendency_test',
+    'run_all_calibration_tests',
+    'CalibrationResults',
 
     # Segment validation (from parent validators.py)
     'SegmentValidator',
