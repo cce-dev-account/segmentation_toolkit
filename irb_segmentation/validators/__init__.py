@@ -44,6 +44,14 @@ from .calibration import (
     CalibrationResults
 )
 
+from .backtesting import (
+    binomial_backtest,
+    chi_squared_backtest,
+    traffic_light_backtest,
+    run_backtest,
+    BacktestResults
+)
+
 # Import SegmentValidator from parent validators.py module
 import sys
 from pathlib import Path
@@ -93,6 +101,13 @@ __all__ = [
     'central_tendency_test',
     'run_all_calibration_tests',
     'CalibrationResults',
+
+    # Back-testing
+    'binomial_backtest',
+    'chi_squared_backtest',
+    'traffic_light_backtest',
+    'run_backtest',
+    'BacktestResults',
 
     # Segment validation (from parent validators.py)
     'SegmentValidator',
