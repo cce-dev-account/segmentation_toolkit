@@ -6,6 +6,8 @@ This module provides comprehensive validation for:
 - pandas DataFrames (schema, data quality)
 - IRB parameters and constraints
 - Data preprocessing and transformation
+- Binary classification models (PD)
+- Regression models (LGD, EAD)
 
 All validators provide actionable error messages with specific guidance
 on how to fix validation issues.
@@ -58,6 +60,34 @@ from .monotonicity import (
     check_monotonic_trend,
     run_monotonicity_validation,
     MonotonicityResults
+)
+
+from .regression_metrics import (
+    r_squared,
+    adjusted_r_squared,
+    mean_absolute_error,
+    root_mean_squared_error,
+    mean_absolute_percentage_error,
+    calculate_all_regression_metrics,
+    RegressionMetrics
+)
+
+from .residual_analysis import (
+    analyze_residuals,
+    breusch_pagan_test,
+    white_test,
+    run_all_residual_diagnostics,
+    ResidualAnalysisResults,
+    HeteroscedasticityTestResults
+)
+
+from .quantile_regression import (
+    quantile_loss,
+    fit_quantile_regression,
+    estimate_lgd_floor,
+    compare_quantile_models,
+    validate_downturn_calibration,
+    QuantileRegressionResults
 )
 
 # Import SegmentValidator from parent validators.py module
@@ -124,8 +154,33 @@ __all__ = [
     'run_monotonicity_validation',
     'MonotonicityResults',
 
+    # Regression metrics (LGD/EAD)
+    'r_squared',
+    'adjusted_r_squared',
+    'mean_absolute_error',
+    'root_mean_squared_error',
+    'mean_absolute_percentage_error',
+    'calculate_all_regression_metrics',
+    'RegressionMetrics',
+
+    # Residual analysis and diagnostics
+    'analyze_residuals',
+    'breusch_pagan_test',
+    'white_test',
+    'run_all_residual_diagnostics',
+    'ResidualAnalysisResults',
+    'HeteroscedasticityTestResults',
+
+    # Quantile regression (downturn LGD)
+    'quantile_loss',
+    'fit_quantile_regression',
+    'estimate_lgd_floor',
+    'compare_quantile_models',
+    'validate_downturn_calibration',
+    'QuantileRegressionResults',
+
     # Segment validation (from parent validators.py)
     'SegmentValidator',
 ]
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
