@@ -52,6 +52,14 @@ from .backtesting import (
     BacktestResults
 )
 
+from .monotonicity import (
+    check_strict_monotonicity,
+    calculate_rank_correlation,
+    check_monotonic_trend,
+    run_monotonicity_validation,
+    MonotonicityResults
+)
+
 # Import SegmentValidator from parent validators.py module
 import sys
 from pathlib import Path
@@ -108,6 +116,13 @@ __all__ = [
     'traffic_light_backtest',
     'run_backtest',
     'BacktestResults',
+
+    # Monotonicity validation
+    'check_strict_monotonicity',
+    'calculate_rank_correlation',
+    'check_monotonic_trend',
+    'run_monotonicity_validation',
+    'MonotonicityResults',
 
     # Segment validation (from parent validators.py)
     'SegmentValidator',
