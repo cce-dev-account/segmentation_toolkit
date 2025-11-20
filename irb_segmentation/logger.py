@@ -8,8 +8,11 @@ the framework's verbose parameter for backward compatibility.
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, TYPE_CHECKING
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from .config import SegmentationConfig
 
 
 class IRBLogger:
@@ -29,7 +32,7 @@ class IRBLogger:
         >>> logger.warning("Monotonicity constraint violated")
     """
 
-    _loggers = {}  # Cache for created loggers
+    _loggers: Dict[str, logging.Logger] = {}  # Cache for created loggers
 
     @staticmethod
     def setup_logger(
@@ -105,7 +108,7 @@ class IRBLogger:
         return logger
 
     @staticmethod
-    def reset_loggers():
+    def reset_loggers() -> None:
         """
         Reset all cached loggers. Useful for testing or reconfiguration.
         """
@@ -114,7 +117,7 @@ class IRBLogger:
         IRBLogger._loggers = {}
 
     @staticmethod
-    def set_level(name: str, level: int):
+    def set_level(name: str, level: int) -> None:
         """
         Change logging level for an existing logger.
 

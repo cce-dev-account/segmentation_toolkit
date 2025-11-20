@@ -68,13 +68,13 @@ class IRBSegmentationParams:
         default_factory=lambda: ['chi_squared', 'psi', 'binomial']
     )
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate parameters after initialization."""
         issues = self.validate_params()
         if issues:
             raise ValueError(f"Invalid parameters:\n" + "\n".join(f"  - {issue}" for issue in issues))
 
-    def to_sklearn_params(self) -> Dict:
+    def to_sklearn_params(self) -> Dict[str, Union[int, str, None]]:
         """
         Extract only sklearn-compatible parameters.
 
