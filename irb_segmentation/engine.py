@@ -7,7 +7,7 @@ Main engine for creating and validating IRB PD model segments.
 import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 import warnings
 import json
 from datetime import datetime
@@ -56,25 +56,25 @@ class IRBSegmentationEngine:
         self.tree_model = DecisionTreeClassifier(**params.to_sklearn_params())
 
         # Storage for results and logs
-        self.segments_train_ = None
-        self.segments_val_ = None
-        self.X_train_ = None
-        self.y_train_ = None
-        self.X_val_ = None
-        self.y_val_ = None
-        self.feature_names_ = None
-        self.X_categorical_ = None  # Store categorical features separately
-        self._leaf_to_segment_cache = None  # Cache for predict() optimization
-        self.is_fitted_ = False
+        self.segments_train_: Optional[np.ndarray] = None
+        self.segments_val_: Optional[np.ndarray] = None
+        self.X_train_: Optional[np.ndarray] = None
+        self.y_train_: Optional[np.ndarray] = None
+        self.X_val_: Optional[np.ndarray] = None
+        self.y_val_: Optional[np.ndarray] = None
+        self.feature_names_: Optional[List[str]] = None
+        self.X_categorical_: Optional[Dict[str, np.ndarray]] = None  # Store categorical features separately
+        self._leaf_to_segment_cache: Optional[Dict[int, int]] = None  # Cache for predict() optimization
+        self.is_fitted_: bool = False
 
         # Logs for audit trail
-        self.adjustment_log_ = {
+        self.adjustment_log_: Dict[str, List[Any]] = {
             'merges': [],
             'splits': [],
             'forced_splits': [],
             'monotonicity_violations': []
         }
-        self.validation_results_ = {}
+        self.validation_results_: Dict[str, Any] = {}
 
     def fit(
         self,
@@ -85,7 +85,7 @@ class IRBSegmentationEngine:
         feature_names: Optional[List[str]] = None,
         X_categorical: Optional[Dict[str, np.ndarray]] = None,
         max_adjustment_iterations: int = 5
-    ):
+    ) -> 'IRBSegmentationEngine':
         """
         Fit the segmentation model and apply IRB constraints.
 
@@ -593,7 +593,7 @@ class IRBSegmentationEngine:
         train_leaves = self.tree_model.apply(self.X_train_)
 
         # Build mapping from leaf nodes to segments
-        leaf_to_segment = {}
+        leaf_to_segment: Dict[int, List[int]] = {}
         for leaf, segment in zip(train_leaves, self.segments_train_):
             leaf = int(leaf)
             segment = int(segment)
@@ -725,7 +725,7 @@ class IRBSegmentationEngine:
         Returns:
             Dictionary with adjustment details
         """
-        history = {
+        history: Dict[str, List[Any]] = {
             'created_by_merges': [],
             'created_by_splits': [],
             'created_by_forced_splits': [],

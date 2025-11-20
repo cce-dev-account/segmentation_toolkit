@@ -7,7 +7,7 @@ from data loading through iterative threshold editing.
 
 import numpy as np
 import pandas as pd
-from typing import Dict, Optional, Tuple, Any
+from typing import Dict, Optional, Tuple, Any, List, Union
 from pathlib import Path
 import json
 from datetime import datetime
@@ -57,21 +57,21 @@ class SegmentationPipeline:
         self.verbose = config.verbose
 
         # Data storage (loaded once, reused)
-        self.X_train = None
-        self.y_train = None
-        self.X_val = None
-        self.y_val = None
-        self.X_oot = None
-        self.y_oot = None
-        self.feature_names = None
-        self.X_categorical = None
+        self.X_train: Optional[np.ndarray] = None
+        self.y_train: Optional[np.ndarray] = None
+        self.X_val: Optional[np.ndarray] = None
+        self.y_val: Optional[np.ndarray] = None
+        self.X_oot: Optional[np.ndarray] = None
+        self.y_oot: Optional[np.ndarray] = None
+        self.feature_names: Optional[List[str]] = None
+        self.X_categorical: Optional[Dict[str, np.ndarray]] = None
 
         # Model storage
-        self.baseline_engine = None
-        self.modified_engine = None
+        self.baseline_engine: Optional[IRBSegmentationEngine] = None
+        self.modified_engine: Optional[IRBSegmentationEngine] = None
 
         # State tracking
-        self.state = {
+        self.state: Dict[str, bool] = {
             'data_loaded': False,
             'baseline_fitted': False,
             'template_exported': False,
@@ -80,9 +80,9 @@ class SegmentationPipeline:
         }
 
         # Results storage
-        self.baseline_results = {}
-        self.modified_results = {}
-        self.comparison_results = {}
+        self.baseline_results: Dict[str, Any] = {}
+        self.modified_results: Dict[str, Any] = {}
+        self.comparison_results: Dict[str, Any] = {}
 
         # Ensure output directory exists
         Path(self.config.output.output_dir).mkdir(parents=True, exist_ok=True)
@@ -192,7 +192,7 @@ class SegmentationPipeline:
 
         # Separate features and target
         y = df[target_col].values
-        X_df = df.drop(columns=[target_col])
+        X_df = df.drop(columns=[str(target_col)])
 
         # Handle missing values in target
         nan_mask = pd.isna(y)
@@ -211,7 +211,7 @@ class SegmentationPipeline:
             logger.info(f"\nTarget variable '{target_col}':")
             logger.info(f"  Unique values: {unique_values}")
             for val in unique_values:
-                count = np.sum(y == val)
+                count: int = int(np.sum(y == val))
                 logger.info(f"  Class {val}: {count:,} samples ({count/len(y)*100:.2f}%)")
 
         # Convert to binary if needed
@@ -224,9 +224,9 @@ class SegmentationPipeline:
         elif len(unique_values) > 2:
             # Multi-class - convert to binary by treating smallest class as positive
             warnings.warn(f"Target has {len(unique_values)} classes. Converting to binary (smallest class = 1)")
-            class_counts = [(val, np.sum(y == val)) for val in unique_values]
-            class_counts.sort(key=lambda x: x[1])
-            positive_class = class_counts[0][0]
+            class_count_tuples: List[Tuple[Any, Any]] = [(val, np.sum(y == val)) for val in unique_values]
+            class_count_tuples.sort(key=lambda x: x[1])
+            positive_class = class_count_tuples[0][0]
             y = (y == positive_class).astype(int)
             if self.verbose:
                 logger.info(f"  Treating class '{positive_class}' as positive (1), others as negative (0)")
@@ -431,7 +431,7 @@ class SegmentationPipeline:
 
         return str(template_path)
 
-    def apply_modifications(self, template_path: str) -> None:
+    def apply_modifications(self, template_path: Union[str, Path]) -> None:
         """
         Apply modifications from edited template and refit model.
 
@@ -647,8 +647,8 @@ class SegmentationPipeline:
                     # Calculate statistics for each segment
                     for seg_id in sorted(segment_ids):
                         seg_mask_train = self.baseline_engine.segments_train_ == seg_id
-                        n_obs = np.sum(seg_mask_train)
-                        n_defaults = np.sum(self.y_train[seg_mask_train])
+                        n_obs: int = int(np.sum(seg_mask_train))
+                        n_defaults: int = int(np.sum(self.y_train[seg_mask_train]))
                         pd_rate = n_defaults / n_obs if n_obs > 0 else 0
                         density = n_obs / len(self.y_train) * 100
 
@@ -1070,7 +1070,7 @@ class SegmentationPipeline:
             f.write("| Risk Level | Segments | Total Observations | Default Rate |\n")
             f.write("|-----------|----------|-------------------|-------------|\n")
 
-            risk_levels = {'Low': [], 'Medium': [], 'High': []}
+            risk_levels: Dict[str, List[Any]] = {'Low': [], 'Medium': [], 'High': []}
             for seg_id, desc in segment_descriptions.items():
                 dr = desc['statistics']['default_rate']
                 if dr < 0.10:
