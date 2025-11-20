@@ -217,7 +217,7 @@ def analyze_residuals(
     # Durbin-Watson statistic
     # DW = sum((e_t - e_{t-1})^2) / sum(e_t^2)
     diff_residuals = np.diff(residuals)
-    dw = np.sum(diff_residuals ** 2) / np.sum(residuals ** 2)
+    dw: float = float(np.sum(diff_residuals ** 2) / np.sum(residuals ** 2))
 
     logger.info(
         f"Residual analysis: mean={mean_res:.6f}, std={std_res:.4f}, "
@@ -225,8 +225,8 @@ def analyze_residuals(
     )
 
     results = ResidualAnalysisResults(
-        mean_residual=mean_res,
-        std_residual=std_res,
+        mean_residual=float(mean_res),
+        std_residual=float(std_res),
         skewness=skew,
         kurtosis=kurt,
         normality_test_statistic=jb_stat,
@@ -300,7 +300,7 @@ def breusch_pagan_test(
     n, p = X.shape
 
     # Squared residuals
-    u2 = residuals ** 2
+    u2: np.ndarray = residuals ** 2
 
     # Add intercept to X if not present
     if not np.allclose(X[:, 0], 1.0):
@@ -323,7 +323,7 @@ def breusch_pagan_test(
 
     # Explained sum of squares
     u2_mean = np.mean(u2)
-    ess = np.sum((u2_fitted - u2_mean) ** 2)
+    ess: float = float(np.sum((u2_fitted - u2_mean) ** 2))
 
     # Test statistic: ESS / 2σ⁴ ~ χ²(p) under H₀
     # Using simplified version: ESS / 2 (assuming σ² = 1 after standardization)
@@ -346,7 +346,7 @@ def breusch_pagan_test(
 
     results = HeteroscedasticityTestResults(
         test_name="Breusch-Pagan",
-        test_statistic=test_stat,
+        test_statistic=float(test_stat),
         pvalue=pval,
         is_homoscedastic=is_homoscedastic,
         degrees_of_freedom=df
@@ -434,7 +434,7 @@ def white_test(
     X_augmented = np.column_stack(X_augmented)
 
     # Squared residuals
-    u2 = residuals ** 2
+    u2: np.ndarray = residuals ** 2
 
     # Regress u² on X_augmented
     try:
@@ -450,8 +450,8 @@ def white_test(
 
     # R² from auxiliary regression
     u2_mean = np.mean(u2)
-    ss_total = np.sum((u2 - u2_mean) ** 2)
-    ss_residual = np.sum((u2 - u2_fitted) ** 2)
+    ss_total: float = float(np.sum((u2 - u2_mean) ** 2))
+    ss_residual: float = float(np.sum((u2 - u2_fitted) ** 2))
     r_squared = 1 - (ss_residual / ss_total) if ss_total > 0 else 0
 
     # Test statistic: n * R² ~ χ²(df) under H₀
@@ -513,7 +513,7 @@ def run_all_residual_diagnostics(
     """
     logger.info("Running comprehensive residual diagnostics")
 
-    results = {}
+    results: Dict[str, Union[ResidualAnalysisResults, HeteroscedasticityTestResults]] = {}
 
     # Residual analysis (always performed)
     results['residual_analysis'] = analyze_residuals(y_true, y_pred, alpha)

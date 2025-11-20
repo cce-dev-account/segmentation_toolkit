@@ -5,7 +5,7 @@ Unified configuration class for the entire segmentation workflow.
 """
 
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, cast
 from pathlib import Path
 import json
 import yaml
@@ -301,7 +301,7 @@ class SegmentationConfig:
             SegmentationConfig instance
         """
         from interfaces.excel_to_config import ConfigFromExcel
-        return ConfigFromExcel.import_config(filepath)
+        return cast('SegmentationConfig', ConfigFromExcel.import_config(filepath))
 
     def to_csv(self, filepath: str) -> None:
         """
@@ -328,7 +328,7 @@ class SegmentationConfig:
             SegmentationConfig instance
         """
         from interfaces.config_csv import ConfigCSV
-        return ConfigCSV.from_csv(filepath)
+        return cast('SegmentationConfig', ConfigCSV.from_csv(filepath))
 
     def summary(self) -> str:
         """
