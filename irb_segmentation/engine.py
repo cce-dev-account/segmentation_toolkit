@@ -593,7 +593,7 @@ class IRBSegmentationEngine:
         train_leaves = self.tree_model.apply(self.X_train_)
 
         # Build mapping from leaf nodes to segments
-        leaf_to_segment = {}
+        leaf_to_segment: Dict[int, List[int]] = {}
         for leaf, segment in zip(train_leaves, self.segments_train_):
             leaf = int(leaf)
             segment = int(segment)
@@ -725,7 +725,7 @@ class IRBSegmentationEngine:
         Returns:
             Dictionary with adjustment details
         """
-        history = {
+        history: Dict[str, List[Any]] = {
             'created_by_merges': [],
             'created_by_splits': [],
             'created_by_forced_splits': [],
