@@ -14,6 +14,11 @@ openpyxl>=3.0.0
 # UI/Widgets
 ipywidgets>=8.0.0
 
+# Type checking
+mypy>=1.0.0
+types-PyYAML>=6.0.0
+pandas-stubs>=2.0.0
+
 # Testing dependencies
 pytest>=7.0.0
 pytest-cov>=3.0.0
