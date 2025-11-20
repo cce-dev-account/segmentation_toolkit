@@ -141,7 +141,7 @@ def validate_array(
 
     # Check for NaN values
     if not allow_nan and np.any(np.isnan(X)):
-        n_nan = np.sum(np.isnan(X))
+        n_nan: int = int(np.sum(np.isnan(X)))
         pct_nan = 100 * n_nan / X.size
         raise ValidationError(
             f"{name} contains NaN values",
@@ -153,7 +153,7 @@ def validate_array(
 
     # Check for infinity values
     if not allow_inf and np.any(np.isinf(X)):
-        n_inf = np.sum(np.isinf(X))
+        n_inf: int = int(np.sum(np.isinf(X)))
         pct_inf = 100 * n_inf / X.size
         raise ValidationError(
             f"{name} contains infinity values",
@@ -229,7 +229,7 @@ def validate_binary_target(
 
     # Check for NaN
     if np.any(np.isnan(y)):
-        n_nan = np.sum(np.isnan(y))
+        n_nan: int = int(np.sum(np.isnan(y)))
         raise ValidationError(
             f"{name} contains NaN values",
             field=name,
